@@ -5,7 +5,7 @@ Lotus is a production-shaped POS frontend MVP for a small-to-medium retail store
 ## Stack
 
 - Next.js 16 App Router, React 19, TypeScript
-- Tailwind CSS 4 with a small semantic CSS design system
+- Tailwind CSS 4 with component-owned style recipes
 - Zod schemas for domain validation
 - React Hook Form, TanStack Table, Lucide React, and JSON Server are declared in the project dependency contract for the next API-backed iteration. The current runnable surface keeps form/table behavior local so the MVP remains usable in restricted environments.
 
@@ -16,6 +16,7 @@ Routes are thin compositions under `app/(dashboard)`. Reusable shell and UI prim
 ```text
 app/                 routes and layouts
 components/          shell, icons, reusable UI primitives
+components/ui/legacy.ts  shared component-owned recipes for management screens
 lib/                 types, mock fixtures, schemas, formatting
 services/api/         environment-based API client
 services/products/    feature service example
@@ -50,6 +51,10 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 
 The default is already `http://localhost:3001`. Components should call feature hooks/services, then services should call `services/api/client.ts`; do not distribute `fetch()` calls across pages.
 
+## Styling
+
+`app/globals.css` contains only the global font, theme tokens, reset, and browser defaults. Screen-specific styling lives with the component markup: reusable management-screen recipes are exported from `components/ui/legacy.ts`, while interactive POS and shell elements use local Tailwind utilities. This keeps responsive and hover/focus behavior available without a large external selector stylesheet.
+
 ## Main routes
 
 `/dashboard`, `/pos`, `/sales`, `/products`, `/categories`, `/inventory`, `/purchases`, `/suppliers`, `/customers`, `/reports`, `/users`, and `/settings` are implemented, including product, sale, purchase, and customer detail/create flows.
@@ -66,4 +71,3 @@ npm run build
 ```
 
 The domain relationship diagram is in [`docs/erd.md`](docs/erd.md). Mock resource names match the ERD and can be populated as backend contracts are introduced.
-
