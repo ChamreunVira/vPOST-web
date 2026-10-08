@@ -1,0 +1,18 @@
+{
+  "users": [
+    { "id": "usr-1", "name": "Sokha Lim", "email": "sokha@lotusmart.kh", "role": "Cashier", "status": "Active" },
+    { "id": "usr-2", "name": "Vannak Chea", "email": "vannak@lotusmart.kh", "role": "Cashier", "status": "Active" },
+    { "id": "usr-3", "name": "Malis Chhay", "email": "malis@lotusmart.kh", "role": "Manager", "status": "Active" }
+  ],
+  "products": [],
+  "categories": [],
+  "suppliers": [],
+  "customers": [],
+  "purchases": [],
+  "purchaseItems": [],
+  "sales": [],
+  "saleItems": [],
+  "payments": [],
+  "inventoryTransactions": []
+}
+

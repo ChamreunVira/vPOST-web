@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lotus Retail OS
 
-## Getting Started
+Lotus is a production-shaped POS frontend MVP for a small-to-medium retail store. It includes a fast register experience, catalog and inventory workflows, purchasing, customer and supplier records, sales history, reports, team access, settings, and a JSON Server mock boundary.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js 16 App Router, React 19, TypeScript
+- Tailwind CSS 4 with a small semantic CSS design system
+- Zod schemas for domain validation
+- React Hook Form, TanStack Table, Lucide React, and JSON Server are declared in the project dependency contract for the next API-backed iteration. The current runnable surface keeps form/table behavior local so the MVP remains usable in restricted environments.
+
+## Architecture
+
+Routes are thin compositions under `app/(dashboard)`. Reusable shell and UI primitives live under `components/`. Domain types, fixture data, formatting, and schemas are centralized under `lib/`. API replacement seams live under `services/api/` and feature services such as `services/products/`.
+
+```text
+app/                 routes and layouts
+components/          shell, icons, reusable UI primitives
+lib/                 types, mock fixtures, schemas, formatting
+services/api/         environment-based API client
+services/products/    feature service example
+db/db.json            JSON Server resource shape
+docs/erd.md           Mermaid ERD
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Install and run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open `http://localhost:3000`. The root route redirects to `/dashboard`; `/login` is a lightweight demo sign-in surface.
 
-## Learn More
+Run the mock API separately:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run mock-api
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The mock server listens on `http://localhost:3001`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment
 
-## Deploy on Vercel
+Create `.env.local` when using the API service:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The default is already `http://localhost:3001`. Components should call feature hooks/services, then services should call `services/api/client.ts`; do not distribute `fetch()` calls across pages.
+
+## Main routes
+
+`/dashboard`, `/pos`, `/sales`, `/products`, `/categories`, `/inventory`, `/purchases`, `/suppliers`, `/customers`, `/reports`, `/users`, and `/settings` are implemented, including product, sale, purchase, and customer detail/create flows.
+
+## Replacing JSON Server
+
+Keep the domain types and service signatures stable, update `API_URL` or the implementation in `services/api/client.ts`, then point feature services at the real endpoints. The route and UI layers do not need to know whether data comes from JSON Server or a production API.
+
+## Verification
+
+```bash
+npm run lint
+npm run build
+```
+
+The domain relationship diagram is in [`docs/erd.md`](docs/erd.md). Mock resource names match the ERD and can be populated as backend contracts are introduced.
+

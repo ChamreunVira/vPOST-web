@@ -1,0 +1,13 @@
+"use client";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { Icon } from "@/components/ui/icons";
+import { Button, PageHeader, Pagination, Price, SearchInput, Select, StatusBadge, Toolbar } from "@/components/ui/primitives";
+import { products } from "@/lib/mock-data";
+
+export default function ProductsPage() {
+  const [query, setQuery] = useState("");
+  const filtered = useMemo(() => products.filter((product) => `${product.name} ${product.sku}`.toLowerCase().includes(query.toLowerCase())), [query]);
+  return <div><PageHeader eyebrow="ទំនិញ" title="ផលិតផល" description="គ្រប់គ្រងបញ្ជីផលិតផល តម្លៃ និងស្ថានភាពលក់របស់អ្នក។" action={<Link href="/products/new" className="button button-primary"><Icon name="plus" size={16} />បន្ថែមផលិតផល</Link>} /><Toolbar search={<SearchInput value={query} onChange={setQuery} placeholder="ស្វែងរកឈ្មោះ ឬលេខកូដ..." />} action={<div className="toolbar-left"><Select><option>គ្រប់ស្ថានភាពស្តុក</option><option>មានក្នុងស្តុក</option><option>ស្តុកជិតអស់</option><option>អស់ពីស្តុក</option></Select><Button variant="secondary" icon="download">ទាញយក</Button></div>} /><div className="table-wrap"><table className="data-table"><thead><tr><th>ផលិតផល</th><th>លេខកូដ</th><th>ប្រភេទ</th><th>តម្លៃដើម</th><th>តម្លៃលក់</th><th>ស្តុក</th><th>ស្ថានភាព</th><th>កែប្រែចុងក្រោយ</th><th /></tr></thead><tbody>{filtered.map((product) => <tr key={product.id}><td><div className="product-cell"><img src={product.imageUrl} alt="" /><span><strong>{product.name}</strong><small>{product.unit}</small></span></div></td><td>{product.sku}</td><td>{product.category}</td><td><Price value={product.costPrice} muted /></td><td><Price value={product.sellingPrice} /></td><td><strong>{product.stock}</strong><small>អប្បបរមា {product.minimumStock}</small></td><td><StatusBadge status={product.stock === 0 ? "Out of stock" : product.stock <= product.minimumStock ? "Low stock" : product.status} /></td><td>{product.updatedAt}</td><td><Link href={`/products/${product.id}/edit`} className="action-button" aria-label={`កែប្រែ ${product.name}`}><Icon name="more" size={17} /></Link></td></tr>)}</tbody></table>{filtered.length === 0 && <div className="empty-state"><span className="empty-icon"><Icon name="search" /></span><strong>រកមិនឃើញផលិតផល</strong><p>សូមសាកល្បងពាក្យស្វែងរកផ្សេង ឬបន្ថែមផលិតផលថ្មី។</p><Link href="/products/new" className="button button-primary">បន្ថែមផលិតផល</Link></div>}</div><Pagination total={products.length + 120} /></div>;
+}
+
